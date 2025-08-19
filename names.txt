@@ -1,1 +1,7 @@
+<<<<<<< Updated upstream
 ha haha ha ahhha
+=======
+Chandanshive
+Raisoni
+Badmanji
+>>>>>>> Stashed changes
