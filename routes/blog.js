@@ -20,9 +20,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage});
 
-router.post("/",upload.single('inputFile'),(req,res)=>{
+router.post("/",upload.single('inputFile'),async (req,res)=>{
     const {title,textArea,inputFile} = req.body;
-    console.log(req.file);
+    
+    const blog = await blogDB.create({
+        title: title,
+        image_url: req.file.originalname,
+        content: textArea
+    })
+
     return res.redirect("/");
     
 });
