@@ -9,21 +9,18 @@ function createToken(payload){
 
 
 function verifyToken(req,res,next){
-    const header = (req.headers.Authorization);
-    if(!header){
-        res.redirect('/user/signin');
-    }
-    const token = header.split(' ')[1];
+    const token = req.cookies.token;
     if(!token){
-        res.status(401).send("Access token required");
+        return res.status(401).send("Access Denied");
     }
-    jwt.verify(token, secretKey, (err,decoded) => {
+
+    jwt.verify(token,secretKey, (err,decoded) => {
         if(err){
-            return res.send('Token is invalid');
+            return res.status(400).send("INVALID TOKEN");
         }
-    });
+    })
 
     next()
-};
+}
 
 module.exports = {verifyToken,createToken};

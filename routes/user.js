@@ -2,15 +2,18 @@ const express = require("express");
 const router = express.Router();
 const userDB = require("../models/user");
 const {createHmac, randomBytes} = require('crypto');
-const {createToken} = require("../Auth/auth")
+const {createToken, verifyToken} = require("../Auth/auth")
 
 router.get("/signup", (req,res)=>{
     return res.render("signup");
 });
 
 router.get("/signin", (req,res)=>{
-    console.log("Hello");``
     return res.render("signin")
+});
+
+router.get("/addBlog",verifyToken,(req,res)=>{
+    return res.render("addBlog");
 });
 
 router.post("/signin",async (req,res)=>{ 
@@ -25,15 +28,17 @@ router.post("/signin",async (req,res)=>{
             "role":user._doc.role,
         };
         const token = createToken(payload);
-        res.header('Authorization',`Bearer ${token}`);
+        res.cookie('token',token,{
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24*60*60*1000 
+        });
     }
     catch(err){
         return res.redirect("/user/signin");
     };
 
-    return res.render("home",{
-        User: user
-    });
+    return res.redirect("/");   
     
 });
 

@@ -4,6 +4,7 @@ const app = express();
 const userDB = require("./models/user");
 const {connectDB} = require("./connection.js");
 const userRoute = require("./routes/user.js");
+const blogRouter = require("./routes/blog.js");
 const {verifyToken} = require("./Auth/auth.js")
 const parser = require('cookie-parser');
 
@@ -20,13 +21,10 @@ app.use(parser())
 app.set("view engine","ejs");
 app.set("views",path.resolve("./views"));
 app.use("/user",userRoute);
+app.use("/addBlog",blogRouter);
 
 app.get("/",verifyToken,(req,res)=>{
     return res.render("home");
 });
 
-app.get("/addBlog",(req,res)=>{
-    return res.render("addBlog");
-});
-
-app.listen(3000,()=> console.log("Server Started"));    
+app.listen(8000,()=> console.log("Server Started"));    

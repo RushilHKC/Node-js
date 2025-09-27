@@ -8,21 +8,25 @@
 </head>
 <body>
     <%- include("./partials/Nav.ejs") %>
-    <div class="input-group mt-4">
-        <span class="input-group-text" id="visible-addon">Title</span>
-        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="visible-addon">
-        <input type="text" class="form-control d-none" placeholder="Hidden input" aria-label="Hidden input" aria-describedby="visible-addon">
-    </div>
+    <form method="post" action="/addBlog" enctype="multipart/form-data">
+        <div class="input-group mt-4">
+            <span class="input-group-text" id="visible-addon">Title</span>
+            <input type="text" class="form-control" placeholder="Blog Title" aria-label="Username" aria-describedby="visible-addon" id="title" name="title">
+            <!-- <input type="text" class="form-control d-none" placeholder="Hidden input" aria-label="Hidden input" aria-describedby="visible-addon"> -->
+        </div>
+        <div class="mb-3">
+            <label for="formFile" class="fosrm-label"></label>
+            <input class="form-control" type="file" id="formFile" name="inputFile">
+        </div>
 
-    <div class="mb-3">
-        <label for="formFile" class="fosrm-label"></label>
-        <input class="form-control" type="file" id="formFile">
-    </div>
-
-    <div class="form-floating mt-4">
-        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-        <label for="floatingTextarea2">Add Content</label>
-    </div>
+        <div class="form-floating mt-4">
+            <textarea class="form-control" placeholder="Leave a comment here" id="textArea" style="height: 100px" name="textArea"></textarea>
+            <label for="floatingTextarea2">Add Content</label>
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto mt-3">
+            <button class="btn btn-success" type="submit">Button</button>
+        </div>
+    </form>
     <%- include("./partials/script.ejs") %>
 </body>
 </html>
