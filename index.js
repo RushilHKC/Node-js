@@ -10,7 +10,7 @@ const parser = require('cookie-parser');
 try{
     connectDB("mongodb://127.0.0.1:27017/blogify").then(()=> console.log("Database Connected Successfully"));
 }
-catch{``
+catch{
     console.log("database connection error");
 }
 
