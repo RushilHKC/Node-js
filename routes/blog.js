@@ -11,7 +11,7 @@ router.get("/",verifyToken,(req,res)=>{
 
 const storage = multer.diskStorage({
     destination: (req,file,cb) => {
-        cb(null,'blog_images/');
+        cb(null,'public/blog_images/');
     },
     filename: (req,file,cb)=>{
         cb(null,Date.now()+"_"+file.originalname);
@@ -22,10 +22,11 @@ const upload = multer({storage:storage});
 
 router.post("/",upload.single('inputFile'),async (req,res)=>{
     const {title,textArea,inputFile} = req.body;
+    console.log(req.file)
     
     const blog = await blogDB.create({
         title: title,
-        image_url: req.file.originalname,
+        image_url: req.file.filename,
         content: textArea
     })
 
