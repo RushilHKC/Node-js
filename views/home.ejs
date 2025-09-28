@@ -15,11 +15,13 @@
             <% blogs.forEach(blog => { %>
                 <div class="col">
                     <div class="card h-100">
-                        <img src="/blog_images/<%= blog.image_url%>" class="card-img-top" alt="...">
+                        <img src="/blog_images/<%= blog.image_url%>" class="card-img-top" alt="..." style="height: 50%; object-fit: cover;" name="image"> 
                         <div class="card-body">
-                            <h5 class="card-title"><%= blog.title %></h5>
-                            <!-- <p class="card-text"><%= blog.content %></p> -->
-                        </div>  
+                            <h5 class="card-title" name="title"><%= blog.title %></h5>
+                        </div> 
+                        <div class="card-footer bg-transparent">
+                            <a href="/blog/<%= blog._id %>" class="btn btn-primary card-img-bottom">View</a>
+                        </div> 
                     </div>
                 </div>
             <% }) %>

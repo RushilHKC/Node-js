@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include("./partials/head.ejs") %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include("./partials/Nav.ejs") %>
+    <figure class="text-center mt-4">
+        <img src="/blog_images/<%=locals.blog.image_url%>" class="figure-img img-fluid rounded" alt="..." style="width: 1000px; height: 600px; object-fit: cover; ">
+        
+    </figure>
+    
+    <%- include("./partials/script.ejs") %>
+
+</body>
+</html>

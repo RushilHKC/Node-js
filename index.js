@@ -9,8 +9,6 @@ const blogRouter = require("./routes/blog.js");
 const {verifyToken} = require("./Auth/auth.js")
 const parser = require('cookie-parser');
 
-
-
 try{
     connectDB("mongodb://127.0.0.1:27017/blogify").then(()=> console.log("Database Connected Successfully"));
 }
@@ -21,6 +19,7 @@ catch{
 app.use(express.urlencoded({extended: true}));
 app.use(parser());
 app.use(express.static('public'));
+app.use(express.urlencoded({extended:true}))
 
 app.set("view engine","ejs");
 app.set("views",path.resolve("./views"));
@@ -34,4 +33,13 @@ app.get("/",verifyToken, async(req,res)=>{
     });
 });
 
+app.get('/blog/:id',async (req,res)=>{
+    
+    blog = await blogDB.findById(req.params.id)
+    console.log(blog)
+
+    return res.render('blog',{
+        blog: blog,
+    });
+})
 app.listen(8000,()=> console.log("Server Started"));    
