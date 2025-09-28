@@ -10,8 +10,17 @@
     <%- include("./partials/Nav.ejs") %>
     <figure class="text-center mt-4">
         <img src="/blog_images/<%=locals.blog.image_url%>" class="figure-img img-fluid rounded" alt="..." style="width: 1000px; height: 600px; object-fit: cover; ">
-        
+        <h1> <%= blog.title %></h1>
     </figure>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8 blog-content">
+                <p class="preserve-formatting" style="text-align: justify;">
+                    <%= blog.content %>
+                </p>
+            </div>
+        </div>
+    </div>
     
     <%- include("./partials/script.ejs") %>
 

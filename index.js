@@ -36,7 +36,6 @@ app.get("/",verifyToken, async(req,res)=>{
 app.get('/blog/:id',async (req,res)=>{
     
     blog = await blogDB.findById(req.params.id)
-    console.log(blog)
 
     return res.render('blog',{
         blog: blog,
