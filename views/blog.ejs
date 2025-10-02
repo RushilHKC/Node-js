@@ -12,17 +12,48 @@
         <img src="/blog_images/<%=locals.blog.image_url%>" class="figure-img img-fluid rounded" alt="..." style="width: 1000px; height: 600px; object-fit: cover; ">
         <h1> <%= blog.title %></h1>
     </figure>
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10 col-lg-8 blog-content">
-                <p class="preserve-formatting" style="text-align: justify;">
-                    <%= blog.content %>
-                </p>
+    <form method="post" action="/blog/<%= blog._id %>">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8 blog-content">
+                    <p class="preserve-formatting" style="text-align: justify;">
+                        <%= blog.content %>
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <label for="floatingTextarea" class="form-label">Comments</label>
+                    <div class="d-flex gap-2">
+                        <textarea name="comment" class="form-control flex-grow-1" placeholder="Leave a comment here" id="floatingTextarea" style="background-color: rgb(134, 221, 173);"></textarea>
+                        <button class="btn btn-primary align-self-start" type="submit">Submit</button>
+                    </div>
+                </div>
             </div>
+            
+            <% if (locals.comments) { %>
+                <% locals.comments.forEach(comment => { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <img src="/blog_images/profile_image.jpg" alt="User" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <a id="comments"></a>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mt-0 mb-1"><%= comment.user._doc.fullName %></h6>
+                                    <p class="mb-0"><%= comment.text %></p>
+                                    <small class="text-muted"><%= comment.createdAt %></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
         </div>
-    </div>
-    
+    </form>
     <%- include("./partials/script.ejs") %>
+    <script>
+
+    </script>
 
 </body>
 </html>

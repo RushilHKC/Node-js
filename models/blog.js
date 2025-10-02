@@ -13,7 +13,15 @@ const blogSchema = new mongoose.Schema({
         type: String,
         required : true,
     },
+    author : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required : true,
+    },
+},{
+    timestamps: true
 });
 
 const blogModel = mongoose.model('blog',blogSchema);
+
 module.exports = blogModel;

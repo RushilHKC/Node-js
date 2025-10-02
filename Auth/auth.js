@@ -18,8 +18,10 @@ function verifyToken(req,res,next){
         if(err){
             return res.status(400).send("INVALID TOKEN");
         }
+        req.user = decoded;
     })
-
+    
+    
     next()
 }
 

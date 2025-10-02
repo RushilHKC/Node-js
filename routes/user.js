@@ -12,10 +12,6 @@ router.get("/signin", (req,res)=>{
     return res.render("signin")
 });
 
-router.get("/addBlog",verifyToken,(req,res)=>{
-    return res.render("addBlog");
-});
-
 router.post("/signin",async (req,res)=>{ 
 
     const {email,password} = req.body;
@@ -26,6 +22,7 @@ router.post("/signin",async (req,res)=>{
             "name": user._doc.fullName,
             "email":user._doc.email,
             "role":user._doc.role,
+            "id":user._doc._id
         };
         const token = createToken(payload);
         res.cookie('token',token,{
