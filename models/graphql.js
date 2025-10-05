@@ -33,7 +33,7 @@ const typeDefs = `#graphql
     }   
     type Query{
         users: [User!]!,
-        comments: [Comment!]!,
+        comments(id: ID!): [Comment!]!,
         blogs: [Blog!]!,
         blog(id: ID!): Blog!
     }`;

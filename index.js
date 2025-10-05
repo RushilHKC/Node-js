@@ -16,6 +16,7 @@ const {expressMiddleware} = require('@apollo/server/express4');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const {request,gql} = require('graphql-request');
 
 const connectionString = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/blogify";
 
@@ -47,13 +48,38 @@ app.get("/", async(req,res)=>{
 
 app.get('/blog/:id',verifyToken,async (req,res)=>{
     
-    blog = await blogDB.findById(req.params.id);
-    comments = await commentDB.find({blogID : req.params.id}).populate('user');
+    // blog = await blogDB.findById(req.params.id);
+    // comments = await commentDB.find({blogID : req.params.id}).populate('user');
+    try {
+        const query = gql `
+            query getData($id:ID!){
+                comments(id: $id){
+                    text,
+                    user{
+                        fullName
+                    }
+                    createdAt
+                }
+                blog(id: $id){
+                    image_url,
+                    title,
+                    content,
+                    _id
+                }
+            }`;
+        const data = await request('http://localhost:3000/graphql', query, {
+            id: req.params.id
+        });
+        return res.render('blog',{
+            blog: data.blog,
+            comments:data.comments,
+        });
+    }
+    catch(err){
+        console.log(err);
+    }
+
     
-    return res.render('blog',{
-        blog: blog,
-        comments:comments,
-    });
 })
 
 app.post('/blog/:id',verifyToken,async (req,res)=>{
@@ -70,9 +96,8 @@ app.post('/blog/:id',verifyToken,async (req,res)=>{
 
 const resolvers = {
     Query:{
-        comments: async() => {
-
-            return await commentDB.find({}).populate('user').populate('blogID')
+        comments: async(_,args) => {
+            return await commentDB.find({blogID: args.id}).populate('user')
         },
         users: async() => {
             return await userDB.find({});
@@ -85,6 +110,7 @@ const resolvers = {
         }
     },
     
+    
 }
 
 async function startServer() {
@@ -93,22 +119,19 @@ async function startServer() {
         resolvers
     });
 
-    // await server.start();
-    // const {url} = startStandaloneServer(server,{
-    //     listen: {port:8000}  
-    // })
-
+    await server.start();
+    
     // server.applyMiddleware({ app });
-    // app.use(
-    //         '/graphql',
-    //         cors(),
-    //         bodyParser.json(),
-    //         expressMiddleware(server)
-    //     );
+    app.use(
+            '/graphql',
+            cors(),
+            bodyParser.json(),
+            expressMiddleware(server)
+        );
 
-    // app.listen(3000,()=> console.log("Server Started"));
-    const {url} = await startStandaloneServer(server,{
-        listen: {port:3000}
-    });    
+    app.listen(3000,()=> console.log("Server Started"));
+    // const {url} = await startStandaloneServer(server,{
+    //     listen: {port:3000}
+    // });    
 }
 startServer().catch(console.error);
