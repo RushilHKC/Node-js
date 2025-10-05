@@ -10,16 +10,22 @@ const blogRouter = require("./routes/blog.js");
 const {verifyToken} = require("./Auth/auth.js")
 const parser = require('cookie-parser');
 const { runInNewContext } = require("vm");
+const {ApolloServer} = require('@apollo/server');
+const typeDefs = require('./models/graphql.js');
+const {expressMiddleware} = require('@apollo/server/express4');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const { startStandaloneServer } = require("@apollo/server/standalone");
 
+const connectionString = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/blogify";
 
 try{
-    connectDB("mongodb://127.0.0.1:27017/blogify").then(()=> console.log("Database Connected Successfully"));
+    connectDB(connectionString).then(()=> console.log("Database Connected Successfully"));
 }
 catch{
     console.log("database connection error");
 }
 
-app.use(express.urlencoded({extended: true}));
 app.use(parser());
 app.use(express.static('public'));
 app.use(express.urlencoded({extended:true}))
@@ -29,9 +35,10 @@ app.set("views",path.resolve("./views"));
 app.use("/user",userRoute);
 app.use("/addBlog",verifyToken,blogRouter);
 
-app.get("/",verifyToken, async(req,res)=>{
+app.get("/", async(req,res)=>{
     bgs = await blogDB.find({});
-    user_name = req.user.name
+
+    user_name = req.user?.name
     return res.render("home",{
         blogs:bgs,
         User:user_name
@@ -61,4 +68,47 @@ app.post('/blog/:id',verifyToken,async (req,res)=>{
     res.redirect(`/blog/${id}#comments`)
 })
 
-app.listen(3000,()=> console.log("Server Started"));    
+const resolvers = {
+    Query:{
+        comments: async() => {
+
+            return await commentDB.find({}).populate('user').populate('blogID')
+        },
+        users: async() => {
+            return await userDB.find({});
+        },
+        blogs: async() => {  // Added this to match schema
+            return await blogDB.find({}).populate('author');
+        },
+        blog: async(_,args) => {
+            return blogDB.findById(args.id).populate('author');
+        }
+    },
+    
+}
+
+async function startServer() {
+    const server = new ApolloServer({
+        typeDefs, // FIX: Correct spelling
+        resolvers
+    });
+
+    // await server.start();
+    // const {url} = startStandaloneServer(server,{
+    //     listen: {port:8000}  
+    // })
+
+    // server.applyMiddleware({ app });
+    // app.use(
+    //         '/graphql',
+    //         cors(),
+    //         bodyParser.json(),
+    //         expressMiddleware(server)
+    //     );
+
+    // app.listen(3000,()=> console.log("Server Started"));
+    const {url} = await startStandaloneServer(server,{
+        listen: {port:3000}
+    });    
+}
+startServer().catch(console.error);
